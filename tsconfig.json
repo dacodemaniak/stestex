@@ -13,6 +13,9 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": [
+      "firebase"
+    ],
     "lib": [
       "es2018",
       "dom"
