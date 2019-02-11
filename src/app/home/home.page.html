@@ -32,7 +32,7 @@
 
       <!-- Affiche l'ensemble des tournées -->
       <ion-item *ngFor="let tour of tournee.tours">
-        <ion-card style="width:100%;">
+        <ion-card style="width:100%;" color="primary">
           <ion-item>
               <ion-icon name="clock" slot="start"></ion-icon>
               <ion-label>{{ tour.tourTime | moment:'HH:mm' }}</ion-label>

@@ -4,8 +4,6 @@ import { AngularFireMessaging } from '@angular/fire/messaging';
 import { ToastController, LoadingController } from '@ionic/angular';
 import { NavetteService } from '../services/navette.service';
 
-import * as moment from 'moment';
-
 /**
  * @name HomePage
  * @desc Page d'accueil de l'application
