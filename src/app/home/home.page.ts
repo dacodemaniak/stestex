@@ -134,6 +134,6 @@ export class HomePage implements OnInit {
       loading.dismiss();
     }, (error) => {
       loading.dismiss();
-    })
+    });
   }
 }

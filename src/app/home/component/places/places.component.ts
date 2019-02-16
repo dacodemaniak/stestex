@@ -47,12 +47,13 @@ export class PlacesComponent implements OnInit {
   public handleSlide(event: any): void {}
 
   public increment(slidingItem: IonItemSliding): any {
-    console.log('Incrémentation');
+    this.places.quantity++;
+
     slidingItem.close();
   }
 
   public decrement(slidingItem: IonItemSliding): any {
-    console.log('Décrémentation');
+    this.places.quantity--;
     slidingItem.close();
   }
 }
