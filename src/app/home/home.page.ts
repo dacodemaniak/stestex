@@ -4,6 +4,8 @@ import { AngularFireMessaging } from '@angular/fire/messaging';
 import { ToastController, LoadingController } from '@ionic/angular';
 import { NavetteService } from '../services/navette.service';
 
+import * as moment from 'moment';
+
 /**
  * @name HomePage
  * @desc Page d'accueil de l'application
@@ -21,6 +23,10 @@ export class HomePage implements OnInit {
   public tourDate: Date = new Date();
   private deferredPrompt: any;
   public tournee: any;
+  private dateReference: moment.Moment;
+
+  public isFirst: boolean = true;
+  public isLast: boolean = false;
 
   // tslint:disable-next-line:no-inferrable-types
   public showAddToHomeScreenButton: boolean = false;
@@ -37,7 +43,6 @@ export class HomePage implements OnInit {
     this.messagingService.getToken();
 
     // Ecoute les notifications
-    console.log('A l\'écoute des notifications...');
     this.messagingService.listenToNotifications().subscribe((message) => {
       this.presentToast(message.notification);
     });
@@ -46,6 +51,14 @@ export class HomePage implements OnInit {
 
     // Timeout de n secondes avant masquage du ion-card
     setTimeout( () => {this.hideCard = true; }, 5000);
+  }
+
+  public nextDate() {
+    this.getNextTour();
+  }
+
+  public previousDate() {
+    this.getPreviousTour();
   }
 
   public ionViewWillEnter() {
@@ -131,6 +144,45 @@ export class HomePage implements OnInit {
 
     await this.navetteService.getTours().subscribe((result) => {
       this.tournee = result;
+      this.dateReference = moment(this.tournee.dateReference);
+      loading.dismiss();
+    }, (error) => {
+      loading.dismiss();
+    });
+  }
+
+  async getNextTour() {
+    const nextDate: moment.Moment = moment(this.tournee.date).clone().add(1, 'day');
+
+    const loading = await this.loadingController.create({
+      message: 'Chargement en cours...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
+    await this.navetteService.getTours(nextDate.format('YYYY-MM-DD')).subscribe((result) => {
+      this.tournee = result;
+      const lastDate: moment.Moment = this.dateReference.clone().add(7, 'days');
+
+      this.isLast = lastDate.isSame(this.tournee.date, 'day');
+      loading.dismiss();
+    }, (error) => {
+      loading.dismiss();
+    });
+  }
+
+  async getPreviousTour() {
+    const previousDate: moment.Moment = moment(this.tournee.date).clone().subtract(1, 'day');
+
+    const loading = await this.loadingController.create({
+      message: 'Chargement en cours...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
+    await this.navetteService.getTours(previousDate.format('YYYY-MM-DD')).subscribe((result) => {
+      this.tournee = result;
+      this.isFirst = (moment(this.tournee.date).isSame(this.dateReference, 'day'));
       loading.dismiss();
     }, (error) => {
       loading.dismiss();
